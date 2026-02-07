@@ -17,6 +17,7 @@ class User(Base):
     namespace: Mapped[str] = mapped_column(String(100), nullable=False, index=True)
     username: Mapped[str] = mapped_column(String(50), nullable=False, index=True)
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
+    token_version: Mapped[int] = mapped_column(default=0, nullable=False)
     email: Mapped[str | None] = mapped_column(String(255), nullable=True, index=True)
     full_name: Mapped[str | None] = mapped_column(String(120), nullable=True)
     avatar_url: Mapped[str | None] = mapped_column(String(255), nullable=True)

@@ -29,9 +29,12 @@ Open docs: `http://127.0.0.1:8000/docs`
 
 ## Endpoints
 
+- `POST /userspaces`
 - `POST /auth/register`
 - `POST /auth/login`
 - `POST /auth/refresh`
+- `POST /auth/logout`
+- `POST /auth/change-password`
 - `GET /users/me`
 - `PATCH /users/me`
 - `POST /users/me/avatar` (multipart upload)
@@ -93,6 +96,20 @@ Create a new migration after model changes:
 
 ```bash
 alembic revision -m "describe change"
+```
+
+## Tests and Coverage
+
+Install test dependencies:
+
+```bash
+pip install -e .[test]
+```
+
+Run user-story tests with coverage:
+
+```bash
+pytest -q --cov=app --cov-report=term-missing tests/test_user_stories.py
 ```
 
 ## Notes

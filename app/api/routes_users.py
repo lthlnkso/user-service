@@ -12,12 +12,12 @@ router = APIRouter(prefix="/users", tags=["users"])
 
 
 @router.get("/me", response_model=UserOut)
-def get_me(current_user: User = Depends(get_current_user)):
+async def get_me(current_user: User = Depends(get_current_user)):
     return current_user
 
 
 @router.patch("/me", response_model=UserOut)
-def update_me(
+async def update_me(
     payload: UserUpdate,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),

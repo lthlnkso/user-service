@@ -22,6 +22,7 @@ class UserOut(BaseModel):
     id: str
     namespace: str
     username: str
+    token_version: int
     email: str | None
     full_name: str | None
     avatar_url: str | None
