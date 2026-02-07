@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session, sessionmaker
 
 import app.api.routes_auth as routes_auth
 import app.services.auth as auth_service
+from app.core.config import settings
 from app.db.base import Base
 from app.db.session import get_db
 from app.main import app
@@ -20,8 +21,12 @@ def anyio_backend() -> str:
 @pytest.fixture()
 async def client(tmp_path) -> Generator[AsyncClient, None, None]:
     db_path = tmp_path / "test.db"
+    uploads_path = tmp_path / "uploads"
     engine = create_engine(f"sqlite:///{db_path}", connect_args={"check_same_thread": False})
     TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+    original_uploads_dir = settings.uploads_dir
+    settings.uploads_dir = str(uploads_path)
+    uploads_path.mkdir(parents=True, exist_ok=True)
 
     Base.metadata.create_all(bind=engine)
 
@@ -49,5 +54,6 @@ async def client(tmp_path) -> Generator[AsyncClient, None, None]:
     async with AsyncClient(transport=transport, base_url="http://test") as async_client:
         yield async_client
 
+    settings.uploads_dir = original_uploads_dir
     app.dependency_overrides.clear()
     Base.metadata.drop_all(bind=engine)

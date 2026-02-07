@@ -1,0 +1,16 @@
+[Unit]
+Description=User Service (FastAPI)
+After=network.target
+
+[Service]
+Type=simple
+User=lthlnkso
+Group=lthlnkso
+WorkingDirectory=/home/lthlnkso/users/user-service
+EnvironmentFile=/home/lthlnkso/users/user-service/.env
+ExecStart=/home/lthlnkso/users/user-service/.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8010
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

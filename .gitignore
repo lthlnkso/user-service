@@ -4,6 +4,9 @@ __pycache__/
 .env
 *.db
 uploads/
+uploads_dev/
+uploads_prod/
+logs/
 .coverage
 user_service.egg-info/
 .pytest_cache/

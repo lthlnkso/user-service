@@ -1,0 +1,9 @@
+tunnel: 542b85e3-201b-4924-8f68-f728f10a2ca9
+credentials-file: /etc/cloudflared/542b85e3-201b-4924-8f68-f728f10a2ca9.json
+
+ingress:
+  - hostname: lthlnkso.com
+    service: http://127.0.0.1:8000
+  - hostname: users.lthlnkso.com
+    service: http://127.0.0.1:8010
+  - service: http_status:404

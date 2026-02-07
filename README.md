@@ -38,6 +38,7 @@ Open docs: `http://127.0.0.1:8000/docs`
 - `GET /users/me`
 - `PATCH /users/me`
 - `POST /users/me/avatar` (multipart upload)
+- `DELETE /users/me/avatar`
 - `GET /health`
 
 ## Example auth payloads
@@ -71,10 +72,11 @@ Login:
 
 - Current model stores `avatar_url` (URL string), not binary image data.
 - Upload route implemented at `POST /users/me/avatar`
-- max file size `2 MB` (`AVATAR_MAX_BYTES`)
+- max file size `1 MB` (`AVATAR_MAX_BYTES`)
 - allowed mime types `image/jpeg`, `image/png`, `image/webp`
 - uploaded files are served from `/uploads/...`
 - for production, store objects in S3-compatible storage and keep URL in DB
+- for production, enforce request body limits at ingress (for example, nginx `client_max_body_size`) to drop oversized multipart uploads early
 
 Example upload:
 
@@ -112,7 +114,54 @@ Run user-story tests with coverage:
 pytest -q --cov=app --cov-report=term-missing tests/test_user_stories.py
 ```
 
+Run production smoke checks (read-only, non-mutating):
+
+```bash
+RUN_PROD_TESTS=1 PROD_BASE_URL=https://users.lthlnkso.com \
+  pytest -q tests_prod/test_prod_smoke.py
+```
+
+## Dev/Prod Runtime (screen)
+
+Start services:
+
+```bash
+./scripts/start-services.sh dev
+./scripts/start-services.sh prod
+./scripts/start-services.sh all
+```
+
+Stop services:
+
+```bash
+./scripts/stop-services.sh dev
+./scripts/stop-services.sh prod
+./scripts/stop-services.sh all
+```
+
+Check status:
+
+```bash
+./scripts/status-services.sh
+```
+
+Session and port model:
+
+- `user-service-prod` -> `127.0.0.1:8010` (no reload, intended public route)
+- `user-service-dev` -> `127.0.0.1:8011` (`--reload`, picks up code changes automatically)
+- prod database: `user_service.db`, uploads: `uploads_prod`
+- dev database: `user_service_dev.db`, uploads: `uploads_dev`
+- recommended test target (for integration-style HTTP tests): `http://127.0.0.1:8011`
+
+Attach to a running session:
+
+```bash
+screen -r user-service-dev
+screen -r user-service-prod
+```
+
 ## Notes
 
 - Change `JWT_SECRET_KEY` before production.
 - For multi-app deployment, point each client app at this API and validate tokens in downstream services if needed.
+- Agent-facing integration guide: `docs/integration-guide-for-agents.md`

@@ -66,3 +66,17 @@ async def upload_me_avatar(
 
     delete_avatar_file(old_avatar_url, settings.uploads_dir)
     return current_user
+
+
+@router.delete("/me/avatar", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_me_avatar(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    old_avatar_url = current_user.avatar_url
+    current_user.avatar_url = None
+    db.add(current_user)
+    db.commit()
+
+    delete_avatar_file(old_avatar_url, settings.uploads_dir)
+    return None
