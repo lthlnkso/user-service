@@ -7,5 +7,11 @@ class TokenPair(BaseModel):
     token_type: str = "bearer"
 
 
+class LoginRequest(BaseModel):
+    namespace: str
+    username: str
+    password: str
+
+
 class RefreshTokenRequest(BaseModel):
     refresh_token: str
